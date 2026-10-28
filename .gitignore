@@ -1,0 +1,16 @@
+# secrets & env
+.env
+*.key
+*.pem
+
+# runtime artifacts (isolated outputs, never committed)
+artifacts/
+evidence/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+
+# os
+Thumbs.db
+.DS_Store

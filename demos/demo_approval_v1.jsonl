@@ -1,0 +1,3 @@
+{"event_id": "E001", "severity": "high", "category": "failed_login", "source_type": "auth", "source_ip": "192.0.2.10", "summary": "Repeated login failures", "synthetic": true}
+{"event_id": "E002", "severity": "medium", "category": "policy_violation", "source_type": "endpoint", "source_ip": "198.51.100.20", "summary": "Blocked test executable", "synthetic": true}
+{"event_id": "A001", "severity": "medium", "category": "export_requested", "source_type": "workflow", "source_ip": "198.51.100.2", "summary": "User requests local artifact export with approval", "synthetic": true}

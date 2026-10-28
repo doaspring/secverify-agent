@@ -1,0 +1,19 @@
+﻿评分维度,权重百分比,开发/证据项,验收证据,日期,优先级,状态
+实用性,40,场景A：正常日志分析,LIVE端到端成功+报告,10/31,P0,NOT_STARTED
+实用性,40,场景B：低可信注入与越权阻断,模型工具提议/策略决定/真实执行分离日志,10/31,P0,NOT_STARTED
+实用性,40,场景C：人工审批导出,审批中断/批准/拒绝的可恢复状态,10/31,P0,NOT_STARTED
+实用性,40,误报控制与正常任务完成率,benign评测分母与false block,11/02,P0,NOT_STARTED
+实用性,40,公网体验,匿名用户可点三案例,11/01,P0,NOT_STARTED
+完整性,30,真实Intern-S2调用,非流式工具调用证据,10/27,P0,NOT_STARTED
+完整性,30,可复现源码与依赖,README/lock/pytest/trace,11/02,P0,NOT_STARTED
+完整性,30,PDF技术文档,PDF含视频和公网链接,11/03,P0,NOT_STARTED
+完整性,30,视频,时长<300s、≥720P网盘分享,11/03,P0,NOT_STARTED
+完整性,30,两层ZIP官方命名,外层一PDF+一ZIP,11/04,P0,NOT_STARTED
+技术难度,30,LangGraph条件中断,真实状态转移与checkpoint,10/31,P0,NOT_STARTED
+技术难度,30,确定性PolicyEngine,deny/allow/approval+单测,10/29,P0,NOT_STARTED
+技术难度,30,Provenance污点来源,source segment与父子关系,10/29,P0,NOT_STARTED
+技术难度,30,ToolGateway强制二次鉴权,未知工具与越权请求全部DENY,10/30,P0,NOT_STARTED
+技术难度,30,安全对照与消融,B0/B1/B2同任务结果与失败记录,11/02,P0,NOT_STARTED
+技术难度,30,MCP v2只读工具适配,真实stdio tools/call+schema校验,11/01,P1,NOT_STARTED
+技术难度,30,OpenTelemetry,有效gen_ai工具事件链,11/02,P1,NOT_STARTED
+技术难度,30,OPA/Rego策略适配,可比对等价策略决策,11/04,P2,NOT_STARTED

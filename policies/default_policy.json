@@ -1,0 +1,31 @@
+{
+  "policy_version": "1.0",
+  "default_decision": "DENY",
+  "roles": {
+    "demo_analyst": {
+      "tools": [
+        "read_demo_alerts",
+        "search_demo_alerts",
+        "aggregate_alerts",
+        "generate_local_report",
+        "export_local_report"
+      ],
+      "resource_scope": [
+        "demo_alerts_v1",
+        "demo_injected_v1",
+        "demo_approval_v1"
+      ],
+      "require_approval": [
+        "export_local_report"
+      ]
+    }
+  },
+  "forbidden_tools": [
+    "mock_send_external",
+    "mock_delete_all"
+  ],
+  "network_egress_enabled": false,
+  "max_tool_calls_per_run": 12,
+  "max_rows_per_read": 100,
+  "approval_ttl_seconds": 300
+}

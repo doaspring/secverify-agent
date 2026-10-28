@@ -1,0 +1,10 @@
+pydantic>=2.6
+httpx>=0.27
+langgraph>=1.0
+streamlit>=1.36
+
+[dev]
+pytest>=8
+
+[sqlite]
+langgraph-checkpoint-sqlite>=2.0
