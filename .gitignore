@@ -14,3 +14,4 @@ __pycache__/
 # os
 Thumbs.db
 .DS_Store
+*.egg-info/
