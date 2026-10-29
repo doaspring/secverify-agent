@@ -30,12 +30,21 @@
 - LangGraph 状态机：多轮工具循环、DENY 安全重规划、interrupt 审批、审计与报告闭环
 - 离线模式所有输出标记 DEMO_REPLAY；LIVE 证据必须待 Key 后由 smoke 脚本真实生成
 
-## 等待用户的事项
-1. **申请书生 API Token**（备注"兴智杯+团队名称"提额）→ 填入 .env 后重跑 smoke 脚本产出 LIVE 证据
-2. 部署平台账号（Streamlit Cloud / HF Spaces）与 Secrets 配置 → M5 公网体验
+## 等待用户的事项（按优先级）
+1. **部署账号（当前任务，见 DEPLOYMENT.md）**：注册 GitHub → 生成 Fine-grained PAT（Contents 读写）→
+   交给助手 push 私有仓库 → share.streamlit.io 用 GitHub 登录一键部署；
+   备选：魔搭 ModelScope 创空间（国内评委访问更稳，手机号注册）
+2. **申请书生 API Token**（备注"兴智杯+团队名称"提额）→ 填入 .env（本地）/平台 Secrets（线上）
+   → 重跑 smoke 脚本产出 LIVE tool_calls 真实证据
 3. 队长姓名/手机号/单位简称（官方 ZIP 命名用）
 4. 视频录制授权与网盘上传（M7）
 5. 向组委会确认云 API 型项目的模型文件/权重说明接受方式
+
+## 部署就绪度（2026-10-28 更新）
+- requirements.txt / .streamlit/config.toml / Dockerfile（含健康检查、非root）/ DEPLOYMENT.md 已备
+- app.py 已内置公网护栏：并发信号量(2) + 20次/小时/会话配额（§12）
+- 无 Key 部署 = DEMO_REPLAY，零成本零密钥面；本机实测 health 端点 OK
+- 网络探测：github.com 可达（主路径）；huggingface.co 不可达（不作为主路径）
 
 ## 下一阶段任务（M3 收尾 + M4）
 1. LIVE 冒烟（依赖 Key）：smoke_tool_call.py 产出 evidence/live_tool_call.json

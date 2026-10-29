@@ -1,0 +1,13 @@
+[server]
+headless = true
+port = 8501
+maxUploadSize = 4
+enableCORS = false
+enableXsrfProtection = true
+
+[browser]
+gatherUsageStats = false
+
+[theme]
+base = "light"
+primaryColor = "#1c6e8f"

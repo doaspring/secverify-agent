@@ -7,7 +7,14 @@ and ONLY THEN is an approval token minted server-side.
 """
 from __future__ import annotations
 
+import sys
+import threading
+import time
 from pathlib import Path
+
+# Works both when the package is pip-installed (local/Docker) and when a
+# managed platform (Streamlit Cloud / ModelScope) only installs requirements.txt
+sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
 
 import streamlit as st
 
@@ -39,6 +46,23 @@ SCENARIOS = {
 @st.cache_resource
 def get_workflow() -> SecVerifyWorkflow:
     return SecVerifyWorkflow()
+
+
+# Public-demo guardrails (spec §12): cap concurrent runs and per-session runs so
+# a LIVE-key deployment can never be drained by one visitor.
+_RUN_SEMAPHORE = threading.Semaphore(2)
+MAX_RUNS_PER_SESSION = 20
+
+
+def _session_quota_ok() -> bool:
+    now = time.time()
+    runs = st.session_state.setdefault("run_log", [])
+    st.session_state["run_log"] = [t for t in runs if now - t < 3600]
+    return len(st.session_state["run_log"]) < MAX_RUNS_PER_SESSION
+
+
+def _record_run() -> None:
+    st.session_state["run_log"].append(time.time())
 
 
 def new_thread_id(run_id: str) -> str:
@@ -118,6 +142,9 @@ with st.expander("自定义任务（高级）"):
 
 if clicked:
     chosen = clicked
+    if not _session_quota_ok():
+        st.error(f"演示配额已达上限（{MAX_RUNS_PER_SESSION}次/小时/会话），请稍后再试。")
+        st.stop()
     run_id = f"run_ui_{chosen.lower()}_{__import__('time').strftime('%H%M%S')}"
     st.session_state["run_id"] = run_id
     st.session_state["scenario"] = chosen
@@ -130,10 +157,12 @@ if clicked:
     )
     st.session_state["task"] = task.model_dump()
     st.session_state["cfg"] = {"configurable": {"thread_id": new_thread_id(run_id)}}
-    wf.compiled().invoke(
-        {"task": task.model_dump(), "scenario": chosen},
-        config=st.session_state["cfg"],
-    )
+    with _RUN_SEMAPHORE:
+        wf.compiled().invoke(
+            {"task": task.model_dump(), "scenario": chosen},
+            config=st.session_state["cfg"],
+        )
+    _record_run()
 
 # area 2/3 - pipeline & risk detail
 if "cfg" in st.session_state:
