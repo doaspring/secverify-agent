@@ -157,7 +157,6 @@ class PolicyEngine:
             return f"run_id={run_id_arg}不属于当前运行，禁止跨运行读取/写入"
         return None
 
-
 class InMemoryBudget:
     """Counts EXECUTED calls per run (denied proposals do not consume budget)."""
 

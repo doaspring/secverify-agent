@@ -20,8 +20,11 @@ SCOPE = ["demo_alerts_v1", "demo_injected_v1", "demo_approval_v1"]
 
 @pytest.fixture(autouse=True)
 def isolate_artifacts(tmp_path, monkeypatch):
-    """Never let tests write into the real project artifacts dir."""
+    """Never let tests write into the real project artifacts dir, and never
+    let a real .env API key turn unit tests into LIVE calls."""
     monkeypatch.setattr(settings, "artifacts_dir", tmp_path / "artifacts")
+    monkeypatch.setattr(settings, "intern_api_key", "")
+    monkeypatch.setattr(settings, "execution_mode", "DEMO_REPLAY")
     yield
 
 

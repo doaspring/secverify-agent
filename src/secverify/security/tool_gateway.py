@@ -127,8 +127,19 @@ class ToolGateway:
                 execution_status=ExecutionStatus.NOT_EXECUTED,
             )
 
+        # normalise through the pinned schema BEFORE dispatch: real models send
+        # "limit":"25" (string) etc.; pydantic smart-coerces and model_dump()
+        # gives the implementation clean typed kwargs
+        spec = get_tool(req.tool_name)
+        try:
+            normalised = spec.schema.model_validate(req.arguments).model_dump()
+        except Exception:
+            normalised = dict(req.arguments)  # engine already validated; keep raw
+        if "run_id" in normalised and normalised.get("run_id") is None:
+            # model-omitted run_id binds to the CURRENT run (it cannot know it)
+            normalised["run_id"] = task.run_id
         started_exec = time.perf_counter()
-        kwargs = dict(req.arguments)
+        kwargs = dict(normalised)
         if req.tool_name in {"generate_local_report", "export_local_report"} \
                 and self.report_provider is not None:
             html, jsn = self.report_provider(req.run_id)

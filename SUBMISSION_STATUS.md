@@ -1,15 +1,15 @@
 # SUBMISSION_STATUS.md — 提交就绪度看板（每日更新）
 
 ## 总体状态
-- 当前阶段：M0+M1+M2+M3核心 于 2026-10-28 一次性推进（落后日历1天，M3部分完成）
+- 当前阶段：M0–M3核心完成；**M5公网体验已上线并验证**（2026-10-28）
 - 日期：2026-10-28
-- P0 三场景（离线 DEMO_REPLAY 模式）：A ✅ / B ✅ / C ✅（浏览器实测通过）
+- P0 三场景（离线 DEMO_REPLAY 模式）：A ✅ / B ✅ / C ✅（本地+公网浏览器实测通过）
 
 ## 关键交付物状态
 | 交付物 | 状态 | 证据 |
 | --- | --- | --- |
+| **公网体验 URL** | ✅ **https://secverify-agent-9cb76gvynzcnedjqenezs7.streamlit.app** | 2026-10-28 匿名验证（curl -L 200 + 无痕浏览器）；场景B阻断+延续、场景C审批中断/批准均公网实测通过；GitHub私有仓库 doaspring/secverify-agent，app可见性Public |
 | Intern-S2 LIVE tool_calls 证据 | **LIVE_BLOCKED**（无 API Key） | scripts/smoke_intern.py, smoke_tool_call.py 均诚实退出码3 |
-| 公网体验 URL | **DEPLOY_BLOCKED** | 待用户配置托管平台（M5） |
 | 5分钟内720P视频 | **VIDEO_BLOCKED** | 待录制（M7） |
 | 技术PDF | DRAFT（TECH_REPORT_TEMPLATE.md 待填实测） | M7 |
 | 内层代码/模型ZIP | 部分（代码可复现，模型权重说明模板就位） | M8 |
@@ -31,14 +31,13 @@
 - 离线模式所有输出标记 DEMO_REPLAY；LIVE 证据必须待 Key 后由 smoke 脚本真实生成
 
 ## 等待用户的事项（按优先级）
-1. **部署账号（当前任务，见 DEPLOYMENT.md）**：注册 GitHub → 生成 Fine-grained PAT（Contents 读写）→
-   交给助手 push 私有仓库 → share.streamlit.io 用 GitHub 登录一键部署；
-   备选：魔搭 ModelScope 创空间（国内评委访问更稳，手机号注册）
-2. **申请书生 API Token**（备注"兴智杯+团队名称"提额）→ 填入 .env（本地）/平台 Secrets（线上）
-   → 重跑 smoke 脚本产出 LIVE tool_calls 真实证据
-3. 队长姓名/手机号/单位简称（官方 ZIP 命名用）
-4. 视频录制授权与网盘上传（M7）
-5. 向组委会确认云 API 型项目的模型文件/权重说明接受方式
+1. **申请书生 API Token**（唯一技术闸门）：https://internlm.intern-ai.org.cn 注册 → API Token，
+   提额备注"兴智杯+团队名称"。拿到后两处配置：本地 `.env` 填 `INTERN_API_KEY`（跑 smoke 脚本出 LIVE 证据）；
+   线上 app Settings → Secrets 添加 `INTERN_API_KEY`（评委可见真实 Intern-S2 调用，注意已有并发/频次护栏）
+2. 队长姓名/手机号/单位简称（官方 ZIP 命名用）
+3. 视频录制授权与网盘上传（M7）
+4. 向组委会确认云 API 型项目的模型文件/权重说明接受方式
+5. （可选）Streamlit app 自定义子域名；删除遗留的 sciverify-agent-3.0 旧应用避免混淆
 
 ## 部署就绪度（2026-10-28 更新）
 - requirements.txt / .streamlit/config.toml / Dockerfile（含健康检查、非root）/ DEPLOYMENT.md 已备

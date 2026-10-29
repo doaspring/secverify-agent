@@ -105,11 +105,13 @@ class AggregateAlertsArgs(BaseModel):
 
 
 class GenerateLocalReportArgs(BaseModel):
-    run_id: str = Field(pattern=RUN_ID_PATTERN)
+    # run_id optional: the model cannot know the server-side run id; when
+    # omitted, the gateway binds the report to the CURRENT run
+    run_id: Optional[str] = Field(default=None, pattern=RUN_ID_PATTERN)
 
 
 class ExportLocalReportArgs(BaseModel):
-    run_id: str = Field(pattern=RUN_ID_PATTERN)
+    run_id: Optional[str] = Field(default=None, pattern=RUN_ID_PATTERN)
     export_format: Literal["html", "json"]
 
 
