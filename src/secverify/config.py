@@ -22,6 +22,29 @@ def _load_dotenv(path: Path) -> None:
 _load_dotenv(PROJECT_ROOT / ".env")
 
 
+def _load_streamlit_secrets() -> None:
+    """Streamlit Cloud delivers Secrets via st.secrets (a TOML file), NOT via
+    os.environ; bridge them into the environment so config stays single-sourced.
+    Local .env still wins because every key uses setdefault."""
+    try:
+        import streamlit as st
+
+        for key in ("INTERN_API_KEY", "INTERN_API_URL", "INTERN_MODEL",
+                    "INTERN_THINKING_MODE", "INTERN_TIMEOUT_SECONDS",
+                    "SECVERIFY_EXECUTION_MODE", "MAX_TOOL_CALLS",
+                    "ALLOW_NETWORK_EGRESS", "APPROVAL_TTL_SECONDS", "MAX_UPLOAD_MB"):
+            try:
+                value = st.secrets[key]
+            except Exception:
+                continue
+            os.environ.setdefault(key, str(value))
+    except Exception:
+        pass  # not running inside Streamlit (tests, scripts) - .env is enough
+
+
+_load_streamlit_secrets()
+
+
 def _env_str(name: str, default: str) -> str:
     return os.environ.get(name, default).strip()
 
