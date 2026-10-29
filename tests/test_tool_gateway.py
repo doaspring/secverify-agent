@@ -41,7 +41,9 @@ def test_aggregate_is_deterministic(gateway, make_task, make_request):
     a = gw.execute(make_request("aggregate_alerts", args), make_task())
     b = gw.execute(make_request("aggregate_alerts", args), make_task())
     assert a.result.data["counts"] == b.result.data["counts"]
-    assert a.result.data["counts"]["high"] == 2  # demo_alerts_v1 fixture
+    # expected distribution from scripts/gen_datasets.py (brute-force week story)
+    assert a.result.data["counts"] == {"low": 10, "medium": 10, "high": 8, "critical": 4}
+    assert a.result.data["total"] == 32
 
 
 def test_export_without_approval_waits_and_writes_nothing(gateway, make_task, make_request):

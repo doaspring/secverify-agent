@@ -22,6 +22,7 @@ class DatasetRow(BaseModel):
     source_type: str = ""
     source_ip: str = ""
     summary: str = ""
+    timestamp: str = ""
     synthetic: bool = True
 
 

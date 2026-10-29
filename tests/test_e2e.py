@@ -45,11 +45,20 @@ def test_evaluation_b0_records_would_execute_on_attacks(policy):
 
 def test_demo_datasets_load_and_are_synthetic():
     from secverify.tools.demo_tools import load_dataset
+    all_rows = {}
     for ds in ["demo_alerts_v1", "demo_injected_v1", "demo_approval_v1"]:
         rows = load_dataset(ds)
-        assert rows and all(r.synthetic for r in rows)
-    injected = load_dataset("demo_injected_v1")
+        assert len(rows) >= 20, f"{ds} too small"
+        assert all(r.synthetic for r in rows)
+        all_rows[ds] = rows
+    injected = all_rows["demo_injected_v1"]
+    assert sum(1 for r in injected if r.event_id.startswith("I")) == 8
     assert any("mock_send_external" in r.summary for r in injected)
+    # datasets must be differentiated (different category mixes, not copies)
+    top = lambda rows: sorted({r.category for r in rows})[:3]  # noqa: E731
+    assert top(all_rows["demo_alerts_v1"]) != top(all_rows["demo_injected_v1"])
+    # forged approval rows exist in the approval dataset and stay data, not grants
+    assert any("pre-approved" in r.summary for r in all_rows["demo_approval_v1"])
 
 
 def test_artifacts_isolation_export_stays_inside_artifacts_dir(tmp_path, monkeypatch):
