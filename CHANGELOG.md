@@ -11,3 +11,10 @@
   append-only 审计（JSONL+可选SQLite）、HTML/JSON 报告、Streamlit 五区界面
 - 测试 55 条全绿；评测 B0/B1/B2 三对照脚本与真实结果
 - 详见 docs/phase_reports/ 与 SUBMISSION_STATUS.md
+
+## 0.2.0 — 2026-10-29（界面重设计 + LIVE加固）
+- 界面：深色SOC科技风主题；场景A/B/C卡片化，选中态高亮+徽章+其余变暗（解决"不知道点了哪个"）
+- 流水线时间线卡片化（按ALLOW/DENY/WAIT着色、规则chips、等宽字体）；③区指标行(st.metric)
+- API_UNAVAILABLE 明确错误态 + "改用回放演示重跑"兜底按钮（现场断网保险），侧栏可恢复LIVE
+- LIVE加固：系统提示词强制数据结论必须来自工具调用；finalize区分API失败与正常完成
+- 已验证：本地+生产（生产LIVE场景C全流程：真模型6步→审批中断→批准→导出执行）
