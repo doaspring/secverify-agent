@@ -1,19 +1,28 @@
 # SUBMISSION_STATUS.md — 提交就绪度看板（每日更新）
 
 ## 总体状态
-- 当前阶段：M0–M3核心完成；**M5公网体验已上线并验证**（2026-10-28）
-- 日期：2026-10-28
-- P0 三场景（离线 DEMO_REPLAY 模式）：A ✅ / B ✅ / C ✅（本地+公网浏览器实测通过）
+- 当前阶段：M0–M3核心 + **M5公网LIVE体验全部完成**（2026-10-29）
+- 日期：2026-10-29
+- P0 三场景：本地（A/B/C 全通过）+ 公网（B/C 匿名实测、A LIVE 实测通过）
 
 ## 关键交付物状态
 | 交付物 | 状态 | 证据 |
 | --- | --- | --- |
-| **公网体验 URL** | ✅ **https://secverify-agent-9cb76gvynzcnedjqenezs7.streamlit.app** | 2026-10-28 匿名验证（curl -L 200 + 无痕浏览器）；场景B阻断+延续、场景C审批中断/批准均公网实测通过；GitHub私有仓库 doaspring/secverify-agent，app可见性Public |
-| Intern-S2 LIVE tool_calls 证据 | **LIVE_BLOCKED**（无 API Key） | scripts/smoke_intern.py, smoke_tool_call.py 均诚实退出码3 |
+| **公网体验 URL** | ✅ **https://secverify-agent-9cb76gvynzcnedjqenezs7.streamlit.app** | 匿名可访问（Public app + 私有Secrets）；生产 LIVE 模式实测场景A：真模型规划3步全ALLOW |
+| **Intern-S2 LIVE tool_calls 证据** | ✅ **LIVE_OK** | 本地 `evidence/live_chat_smoke.json`（chat LIVE_OK, model=Intern-S2）；`evidence/live_tool_call.json`（真实tool_calls回合137+291=428）；LIVE场景A端到端（read→aggregate→report 全真模型） |
 | 5分钟内720P视频 | **VIDEO_BLOCKED** | 待录制（M7） |
-| 技术PDF | DRAFT（TECH_REPORT_TEMPLATE.md 待填实测） | M7 |
-| 内层代码/模型ZIP | 部分（代码可复现，模型权重说明模板就位） | M8 |
+| 技术PDF | DRAFT | M7，体验URL已可填入 |
+| 内层代码/模型ZIP | 部分 | M8 |
 | 外层官方命名ZIP | BLOCKED（缺队长信息） | M8 |
+
+## LIVE 模式记录（2026-10-29，真实运行）
+- chat 冒烟：LIVE_OK，model=Intern-S2，延迟约3s
+- tool_calls 回合：finish_reason=tool_calls，add_numbers(137,291)→428，二轮回传成功
+- 场景A（LIVE）：模型自主规划3步全ALLOW，报告生成
+- 场景B（LIVE，注入数据集）：**模型本轮未被诱导**（诚实记录 unauthorized_proposal_rate=0）；
+  策略兜底由 policy-only 评测（B2 42/42）证明；DEMO_REPLAY 回放用于UI演示阻断路径
+- LIVE 模式修复（真实运行暴露）：消息历史接入（模型可见工具结果）、参数归一化（模型传字符串limit）、
+  run_id 可选并绑定当前运行（模型无法知道服务器run_id）、空请求路由守卫、Streamlit st.secrets 桥接
 
 ## 测试与评测（真实执行）
 - pytest：**55 PASS / 0 FAIL / 0 SKIP**（2026-10-28，全部离线确定性）
