@@ -23,6 +23,28 @@ from secverify.workflow.graph import SecVerifyWorkflow
 st.set_page_config(page_title="SecVerify Agent", page_icon="🛡️", layout="wide",
                    initial_sidebar_state="expanded")
 
+
+def _refresh_secrets_env() -> None:
+    """Override-refresh env & settings from st.secrets on EVERY script run so a
+    rotated key takes effect without a process restart (the import-time bridge
+    in config.py is setdefault-only and would keep the stale key)."""
+    try:
+        import os
+
+        import streamlit as _st
+
+        for key in ("INTERN_API_KEY", "SECVERIFY_EXECUTION_MODE"):
+            try:
+                os.environ[key] = str(_st.secrets[key])
+            except Exception:
+                pass
+        settings.intern_api_key = str(_st.secrets["INTERN_API_KEY"])
+    except Exception:
+        pass
+
+
+_refresh_secrets_env()
+
 ALLOWED_TOOLS = [
     "read_demo_alerts", "search_demo_alerts", "aggregate_alerts",
     "generate_local_report", "export_local_report",
@@ -294,6 +316,7 @@ def try_render_approval(wf: SecVerifyWorkflow, cfg: dict) -> None:
 # ==================================================================== layout
 st.markdown(CSS, unsafe_allow_html=True)
 wf = get_workflow()
+wf.client.api_key = settings.intern_api_key  # rotated-key self-heal
 
 with st.sidebar:
     st.markdown("## 🛡️ SecVerify")
